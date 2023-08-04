@@ -3,6 +3,7 @@
 <head>
     <title>EMG Data Comparison</title>
     <link rel="stylesheet" href="estilotabla/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script/script_2.js"></script>
 </head>
 <body>
@@ -23,20 +24,12 @@
                 <p id="average"></p>
             </div>
             <div class="banner-right">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Index</th>
-                            <th>EMG Data (File 2)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="emg-data-table-2">
-                    </tbody>
-                </table>
+                <canvas id="emg-data-chart" width="400" height="200"></canvas>
                 <p id="average2"></p>
             </div>
         </div>
-        <p id="training-message"></p>
+        <p id="fatigue-message"></p>
     </div>
 </body>
 </html>
+
