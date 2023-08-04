@@ -5,8 +5,8 @@ function readCSV(file) {
         .then(data => {
             // Dividir el archivo CSV en líneas
             const lines = data.split('\n');
-            // Convertir las líneas en datos numéricos
-            const numericData = lines.map(line => parseFloat(line));
+            // Convertir las líneas en datos numéricos, ignorando líneas vacías o no numéricas
+            const numericData = lines.map(line => parseFloat(line)).filter(value => !isNaN(value));
             return numericData;
         })
         .catch(error => {
@@ -30,6 +30,12 @@ const emgData2Promise = readCSV('emg_data_2.csv');
 // Procesar ambos archivos CSV y comparar los promedios
 Promise.all([emgDataPromise, emgData2Promise])
     .then(([emgData, emgData2]) => {
+        // Verificar si hay datos en el archivo emg_data.csv
+        if (emgData.length === 0) {
+            console.error('No se encontraron datos en emg_data.csv');
+            return;
+        }
+
         // Calcular el promedio de los datos EMG del archivo emg_data.csv
         const average = calculateAverage(emgData);
 
