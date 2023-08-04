@@ -44,11 +44,38 @@ Promise.all([emgDataPromise, emgData2Promise])
         const averageElement2 = document.getElementById('average2');
         averageElement2.textContent = `Average (File 2): ${average2.toFixed(2)}`;
 
-        // Mostrar el mensaje de entrenamiento dependiendo de la comparación de promedios
-        const messageElement = document.getElementById('training-message');
+        // Mostrar el mensaje de fatiga dependiendo de la comparación de promedios
+        const fatigueMessageElement = document.getElementById('fatigue-message');
         if (average > average2) {
-            messageElement.textContent = 'No presenta fatiga muscular';
+            fatigueMessageElement.textContent = 'No presenta fatiga muscular';
         } else {
-            messageElement.textContent = 'Presenta fatiga muscular';
+            fatigueMessageElement.textContent = 'Presenta fatiga muscular';
         }
+
+        // Crear el gráfico del archivo emg_data_2.csv
+        const emgDataChartElement = document.getElementById('emg-data-chart');
+        new Chart(emgDataChartElement, {
+            type: 'line',
+            data: {
+                labels: emgData2.map((value, index) => index + 1),
+                datasets: [{
+                    label: 'EMG Data (File 2)',
+                    data: emgData2,
+                    borderColor: 'blue',
+                    backgroundColor: 'rgba(0, 0, 255, 0.1)',
+                    fill: true,
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                    },
+                    y: {
+                        beginAtZero: true,
+                    }
+                }
+            }
+        });
     });
