@@ -1,18 +1,18 @@
 // Función para leer el archivo CSV y obtener los datos en formato numérico
 function readCSV(file) {
-    return new Promise((resolve, reject) => {
-        Papa.parse(file, {
-            download: true,
-            complete: function(results) {
-                const data = results.data.map(row => parseFloat(row[0]));
-                resolve(data);
-            },
-            error: function(error) {
-                console.error('Error al cargar el archivo:', error);
-                reject([]);
-            }
+    return fetch(file)
+        .then(response => response.text())
+        .then(data => {
+            // Dividir el archivo CSV en líneas
+            const lines = data.split('\n');
+            // Convertir las líneas en datos numéricos
+            const numericData = lines.map(line => parseFloat(line));
+            return numericData;
+        })
+        .catch(error => {
+            console.error('Error al cargar el archivo:', error);
+            return [];
         });
-    });
 }
 
 // Calcular el promedio de los datos
@@ -21,99 +21,50 @@ function calculateAverage(data) {
     return sum / data.length;
 }
 
-// Leer los datos del archivo emg_data.csv
+// Leer los datos del archivo CSV emg_data.csv
 const emgDataPromise = readCSV('emg_data.csv');
 
-// Leer los datos del archivo emg_data_2.csv
+// Leer los datos del archivo CSV emg_data_2.csv
 const emgData2Promise = readCSV('emg_data_2.csv');
 
 // Procesar ambos archivos CSV y comparar los promedios
 Promise.all([emgDataPromise, emgData2Promise])
     .then(([emgData, emgData2]) => {
-        // Mostrar los datos en la tabla en la página web
-        const tableBody1 = document.getElementById('emg-data-table-1');
-        const tableBody2 = document.getElementById('emg-data-table-2');
+        // Calcular el promedio de los datos EMG del archivo emg_data.csv
+        const average = calculateAverage(emgData);
 
-        emgData.forEach((value, i) => {
-            const row = document.createElement('tr');
-            const indexCell = document.createElement('td');
-            const dataCell = document.createElement('td');
-            indexCell.textContent = i + 1;
-            dataCell.textContent = value;
-            row.appendChild(indexCell);
-            row.appendChild(dataCell);
-            tableBody1.appendChild(row);
-        });
+        // Mostrar el promedio del archivo emg_data.csv en el HTML
+        const averageElement = document.getElementById('average');
+        averageElement.textContent = `Average (File 1): ${average.toFixed(2)}`;
 
-        emgData2.forEach((value, i) => {
-            const row = document.createElement('tr');
-            const indexCell = document.createElement('td');
-            const dataCell = document.createElement('td');
-            indexCell.textContent = i + 1;
-            dataCell.textContent = value;
-            row.appendChild(indexCell);
-            row.appendChild(dataCell);
-            tableBody2.appendChild(row);
-        });
+        // Obtener los datos por encima del promedio del archivo emg_data.csv
+        const aboveAverageData = emgData.filter(value => value > average);
+
+        // Mostrar los datos por encima del promedio del archivo emg_data.csv en el HTML
+        const aboveAverageElement = document.getElementById('above-average');
+        aboveAverageElement.textContent = `Data above average (File 1): ${aboveAverageData.join(', ')}`;
 
         // Calcular el promedio de los datos EMG del archivo emg_data_2.csv
         const average2 = calculateAverage(emgData2);
 
-        // Mostrar el promedio en el HTML
-        const averageElement = document.getElementById('average');
-        averageElement.textContent = `Average: ${average2.toFixed(2)}`;
+        // Mostrar el promedio del archivo emg_data_2.csv en el HTML
+        const averageElement2 = document.getElementById('average2');
+        averageElement2.textContent = `Average (File 2): ${average2.toFixed(2)}`;
 
         // Obtener los datos por encima del promedio del archivo emg_data_2.csv
         const aboveAverageData2 = emgData2.filter(value => value > average2);
 
-        // Mostrar los datos por encima del promedio en el HTML
-        const aboveAverageElement = document.getElementById('above-average');
-        aboveAverageElement.textContent = `Data above average: ${aboveAverageData2.join(', ')}`;
-
-        // Calcular el promedio del archivo emg_data.csv
-        const average = calculateAverage(emgData);
+        // Mostrar los datos por encima del promedio del archivo emg_data_2.csv en el HTML
+        const aboveAverageElement2 = document.getElementById('above-average2');
+        aboveAverageElement2.textContent = `Data above average (File 2): ${aboveAverageData2.join(', ')}`;
 
         // Mostrar el mensaje de entrenamiento dependiendo de la comparación de promedios
         const messageElement = document.getElementById('training-message');
-        if (average2 >= average) {
-            messageElement.textContent = 'No presenta fatiga muscular';
+        if (aboveAverageData2.length >= 20) {
+            messageElement.textContent = 'Entrenamiento completamente eficiente';
+        } else if (aboveAverageData2.length >= 15) {
+            messageElement.textContent = 'Entrenamiento eficiente';
         } else {
-            messageElement.textContent = 'Presenta fatiga muscular';
+            messageElement.textContent = 'Entrenamiento no eficiente';
         }
-
-        // Crear el gráfico de líneas con Chart.js
-        const ctx = document.getElementById('emg-chart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Array.from({ length: emgData2.length }, (_, i) => i + 1),
-                datasets: [{
-                    label: 'EMG Data',
-                    data: emgData2,
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 2,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        type: 'linear',
-                        position: 'bottom',
-                        title: {
-                            display: true,
-                            text: 'Index'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'EMG Data'
-                        }
-                    }
-                }
-            }
-        });
     });
