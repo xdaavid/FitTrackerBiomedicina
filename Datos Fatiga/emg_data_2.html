@@ -11,21 +11,25 @@
         <h1>EMG Data Comparison</h1>
         <div class="banner">
             <div class="banner-left">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Index</th>
-                            <th>EMG Data (File 1)</th>
-                        </tr>
-                    </thead>
-                    <tbody id="emg-data-table">
-                    </tbody>
-                </table>
-                <p id="average"></p>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Index</th>
+                                <th>EMG Data (File 1)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="emg-data-table">
+                        </tbody>
+                    </table>
+                    <p id="average"></p>
+                </div>
             </div>
             <div class="banner-right">
-                <canvas id="emg-data-chart" width="400" height="200"></canvas>
-                <p id="average2"></p>
+                <div class="chart-container">
+                    <canvas id="emg-data-chart" width="400" height="200"></canvas>
+                    <p id="average2"></p>
+                </div>
             </div>
         </div>
         <p id="fatigue-message"></p>
