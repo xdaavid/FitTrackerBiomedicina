@@ -29,6 +29,13 @@ h1 {
 .banner-right {
     flex-basis: 35%;
 }
+/* ... (código CSS anterior) ... */
+
+.table-container, .chart-container {
+    margin-bottom: 20px;
+}
+
+/* ... (código CSS anterior) ... */
 
 table {
     width: 100%;
