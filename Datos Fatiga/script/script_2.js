@@ -33,38 +33,22 @@ Promise.all([emgDataPromise, emgData2Promise])
         // Calcular el promedio de los datos EMG del archivo emg_data.csv
         const average = calculateAverage(emgData);
 
+        // Calcular el promedio del archivo emg_data_2.csv
+        const average2 = calculateAverage(emgData2);
+
         // Mostrar el promedio del archivo emg_data.csv en el HTML
         const averageElement = document.getElementById('average');
         averageElement.textContent = `Average (File 1): ${average.toFixed(2)}`;
-
-        // Obtener los datos por encima del promedio del archivo emg_data.csv
-        const aboveAverageData = emgData.filter(value => value > average);
-
-        // Mostrar los datos por encima del promedio del archivo emg_data.csv en el HTML
-        const aboveAverageElement = document.getElementById('above-average');
-        aboveAverageElement.textContent = `Data above average (File 1): ${aboveAverageData.join(', ')}`;
-
-        // Calcular el promedio de los datos EMG del archivo emg_data_2.csv
-        const average2 = calculateAverage(emgData2);
 
         // Mostrar el promedio del archivo emg_data_2.csv en el HTML
         const averageElement2 = document.getElementById('average2');
         averageElement2.textContent = `Average (File 2): ${average2.toFixed(2)}`;
 
-        // Obtener los datos por encima del promedio del archivo emg_data_2.csv
-        const aboveAverageData2 = emgData2.filter(value => value > average2);
-
-        // Mostrar los datos por encima del promedio del archivo emg_data_2.csv en el HTML
-        const aboveAverageElement2 = document.getElementById('above-average2');
-        aboveAverageElement2.textContent = `Data above average (File 2): ${aboveAverageData2.join(', ')}`;
-
         // Mostrar el mensaje de entrenamiento dependiendo de la comparación de promedios
         const messageElement = document.getElementById('training-message');
-        if (aboveAverageData2.length >= 20) {
-            messageElement.textContent = 'Entrenamiento completamente eficiente';
-        } else if (aboveAverageData2.length >= 15) {
-            messageElement.textContent = 'Entrenamiento eficiente';
+        if (average > average2) {
+            messageElement.textContent = 'No presenta fatiga muscular';
         } else {
-            messageElement.textContent = 'Entrenamiento no eficiente';
+            messageElement.textContent = 'Presenta fatiga muscular';
         }
     });
