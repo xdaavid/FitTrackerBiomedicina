@@ -115,3 +115,5 @@ Promise.all([emgDataPromise, emgData2Promise])
                     }
                 }
             }
+        });
+    });
