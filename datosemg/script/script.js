@@ -69,7 +69,7 @@ fetch('emg_data.csv')
                         position: 'bottom',
                         title: {
                             display: true,
-                            text: 'Index'
+                            text: 'Muestras'
                         }
                     },
                     y: {
