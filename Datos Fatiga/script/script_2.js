@@ -1,12 +1,18 @@
 // Función para leer el archivo CSV y obtener los datos en formato numérico
 function readCSV(file) {
-    return fetch(file)
-        .then(response => response.text())
-        .then(data => data.split('\n').map(line => parseFloat(line)))
-        .catch(error => {
-            console.error('Error al cargar el archivo:', error);
-            return [];
+    return new Promise((resolve, reject) => {
+        Papa.parse(file, {
+            download: true,
+            complete: function(results) {
+                const data = results.data.map(row => parseFloat(row[0]));
+                resolve(data);
+            },
+            error: function(error) {
+                console.error('Error al cargar el archivo:', error);
+                reject([]);
+            }
         });
+    });
 }
 
 // Calcular el promedio de los datos
@@ -25,17 +31,30 @@ const emgData2Promise = readCSV('emg_data_2.csv');
 Promise.all([emgDataPromise, emgData2Promise])
     .then(([emgData, emgData2]) => {
         // Mostrar los datos en la tabla en la página web
-        const tableBody = document.getElementById('emg-data-table');
-        for (let i = 0; i < emgData2.length; i++) {
+        const tableBody1 = document.getElementById('emg-data-table-1');
+        const tableBody2 = document.getElementById('emg-data-table-2');
+
+        emgData.forEach((value, i) => {
             const row = document.createElement('tr');
             const indexCell = document.createElement('td');
             const dataCell = document.createElement('td');
             indexCell.textContent = i + 1;
-            dataCell.textContent = emgData2[i];
+            dataCell.textContent = value;
             row.appendChild(indexCell);
             row.appendChild(dataCell);
-            tableBody.appendChild(row);
-        }
+            tableBody1.appendChild(row);
+        });
+
+        emgData2.forEach((value, i) => {
+            const row = document.createElement('tr');
+            const indexCell = document.createElement('td');
+            const dataCell = document.createElement('td');
+            indexCell.textContent = i + 1;
+            dataCell.textContent = value;
+            row.appendChild(indexCell);
+            row.appendChild(dataCell);
+            tableBody2.appendChild(row);
+        });
 
         // Calcular el promedio de los datos EMG del archivo emg_data_2.csv
         const average2 = calculateAverage(emgData2);
@@ -96,5 +115,3 @@ Promise.all([emgDataPromise, emgData2Promise])
                     }
                 }
             }
-        });
-    });
